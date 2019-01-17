@@ -1,0 +1,44 @@
+---
+apiVersion : v1
+kind: Pod
+metadata:
+ name: hazelcast-demo
+ labels:
+   app: web
+spec:
+ containers:
+  - name: hello-verticle
+    image: sample/hazelcast-sender
+    imagePullPolicy: IfNotPresent
+    ports:
+      - containerPort: 8080
+  - name: reply-verticle
+    image: sample/hazelcast-receiver
+    imagePullPolicy: IfNotPresent
+    ports:
+      - containerPort: 8081
+
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+ name: hazelcast-demo
+spec:
+ replicas: 1
+ template:
+   metadata:
+    name: hazelcast-demo
+    labels:
+      app: web
+   spec:
+    containers:
+     - name: hello-verticle
+       image: sample/hazelcast-sender
+       imagePullPolicy: IfNotPresent
+       ports:
+         - containerPort: 8080
+     - name: reply-verticle
+       image: sample/hazelcast-receiver
+       imagePullPolicy: IfNotPresent
+       ports:
+         - containerPort: 8081
